@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>도반 道伴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#2b2620; --inkSoft:#6f675c; --paper:#f4efe6; --paperDeep:#ebe3d5;
+    --card:#fdfbf6; --jade:#3f7d6e; --jadeDeep:#2f5d52; --jadeSoft:#e3ede9; --line:#ded5c4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; }
+  body {
+    font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--paper); color:var(--ink);
+    display:flex; flex-direction:column; height:100dvh; overflow:hidden;
+  }
+  .topbar {
+    padding:16px 20px 12px; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+  }
+  .brand { display:flex; align-items:baseline; gap:8px; }
+  .brand b { font-size:20px; font-weight:800; color:var(--jadeDeep); letter-spacing:1px; }
+  .brand span { font-size:11px; color:var(--inkSoft); letter-spacing:2px; }
+  .topbar .tabname { font-size:13px; color:var(--inkSoft); }
+
+  .screen { flex:1; overflow:hidden; display:none; flex-direction:column; }
+  .screen.active { display:flex; }
+
+  #chatScroll { flex:1; overflow-y:auto; padding:16px 16px 8px; }
+  .row { display:flex; margin-bottom:12px; }
+  .row.me { justify-content:flex-end; }
+  .ava { width:30px; height:30px; border-radius:50%; background:var(--jadeDeep); flex-shrink:0;
+         margin-right:8px; display:flex; align-items:center; justify-content:center; font-size:15px; align-self:flex-end; }
+  .bubble { max-width:78%; padding:11px 15px; font-size:14px; line-height:1.65; white-space:pre-wrap;
+            border-radius:18px 18px 18px 4px; background:var(--card); border:1px solid var(--line); }
+  .me .bubble { border-radius:18px 18px 4px 18px; background:var(--jade); color:#fff; border:none; }
+  .starter { display:block; width:100%; text-align:left; margin-bottom:8px; padding:11px 14px;
+             border:1px solid var(--line); border-radius:12px; background:var(--card);
+             color:var(--inkSoft); font-size:13.5px; cursor:pointer; font-family:inherit; }
+  .typing { display:flex; gap:5px; padding:6px 14px; margin-bottom:10px; }
+  .typing span { width:7px; height:7px; border-radius:50%; background:var(--jade);
+                 animation:pulse 1.2s infinite ease-in-out; }
+  .typing span:nth-child(2){ animation-delay:.2s; } .typing span:nth-child(3){ animation-delay:.4s; }
+  @keyframes pulse { 0%,100%{opacity:.3;transform:translateY(0);} 50%{opacity:1;transform:translateY(-3px);} }
+
+  .composer { padding:10px 14px; border-top:1px solid var(--line); display:flex; gap:8px;
+              align-items:flex-end; flex-shrink:0; }
+  .composer textarea { flex:1; resize:none; border:1px solid var(--line); border-radius:20px;
+                       padding:11px 15px; font-size:14px; max-height:100px; background:var(--card);
+                       color:var(--ink); font-family:inherit; outline:none; line-height:1.4; }
+  .send { width:44px; height:44px; flex-shrink:0; border-radius:50%; border:none; background:var(--jade);
+          color:#fff; font-size:18px; cursor:pointer; }
+  .send:disabled { background:var(--line); cursor:default; }
+  .disclaimer { font-size:10.5px; color:var(--inkSoft); text-align:center; padding:0 18px 10px; line-height:1.4; flex-shrink:0; }
+
+  .pad { flex:1; overflow-y:auto; padding:20px 20px 28px; }
+  .verse { background:var(--jadeDeep); color:#f4efe6; border-radius:18px; padding:24px 20px; margin-bottom:8px; }
+  .verse .q { font-size:17px; line-height:1.7; font-weight:600; }
+  .verse .src { font-size:12px; opacity:.7; margin-top:12px; }
+  .gloss { background:var(--jadeSoft); border-radius:14px; padding:13px 15px; margin-bottom:20px;
+           font-size:13px; color:var(--jadeDeep); line-height:1.6; }
+  .h { font-size:13.5px; font-weight:700;
