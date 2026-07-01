@@ -63,4 +63,184 @@
   .verse .src { font-size:12px; opacity:.7; margin-top:12px; }
   .gloss { background:var(--jadeSoft); border-radius:14px; padding:13px 15px; margin-bottom:20px;
            font-size:13px; color:var(--jadeDeep); line-height:1.6; }
-  .h { font-size:13.5px; font-weight:700;
+  .h { font-size:13.5px; font-weight:700; margin-bottom:7px; }
+  .qsm { font-size:14px; color:var(--inkSoft); margin-bottom:10px; }
+  .pad textarea { width:100%; min-height:80px; border:1px solid var(--line); border-radius:12px; padding:12px;
+                  font-size:14px; resize:none; background:var(--card); color:var(--ink); font-family:inherit;
+                  outline:none; margin-bottom:14px; }
+  .btn { width:100%; padding:14px; border:none; border-radius:12px; cursor:pointer; background:var(--jade);
+         color:#fff; font-size:15px; font-weight:700; font-family:inherit; }
+  .week { margin-top:24px; display:flex; gap:8px; }
+  .week .d { flex:1; text-align:center; }
+  .week .bar { height:28px; border-radius:8px; margin-bottom:5px; background:var(--paperDeep); opacity:.5; }
+  .week .bar.on { background:var(--jade); opacity:1; }
+  .week small { font-size:10px; color:var(--inkSoft); }
+  .streak { text-align:center; font-size:11.5px; color:var(--inkSoft); margin-top:10px; }
+
+  .topicHead { font-size:14.5px; line-height:1.6; margin-bottom:18px; }
+  .topicHead b { color:var(--jadeDeep); }
+  .topic { background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:10px;
+           overflow:hidden; }
+  .topic.locked { opacity:.55; }
+  .topic button { width:100%; padding:15px 16px; border:none; background:transparent; display:flex;
+                  align-items:center; justify-content:space-between; text-align:left; font-family:inherit; cursor:pointer; }
+  .topic .tt { font-size:15px; font-weight:700; }
+  .topic .td { font-size:12.5px; color:var(--inkSoft); margin-top:2px; }
+  .topic .body { padding:0 16px 16px; font-size:13.5px; color:var(--inkSoft); line-height:1.7; display:none; }
+  .topic.open .body { display:block; }
+  .askbtn { margin-top:12px; padding:8px 14px; border:1px solid var(--jade); border-radius:9px;
+            background:transparent; color:var(--jade); font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .lockNote { text-align:center; font-size:11.5px; color:var(--inkSoft); margin-top:8px; }
+
+  .tabbar { display:flex; border-top:1px solid var(--line); background:var(--card); flex-shrink:0; }
+  .tabbar button { flex:1; border:none; background:transparent; cursor:pointer; padding:10px 0 14px;
+                   display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .tabbar .ic { font-size:20px; filter:grayscale(.6) opacity(.5); }
+  .tabbar button.active .ic { filter:none; }
+  .tabbar .lb { font-size:11px; color:var(--inkSoft); font-weight:500; }
+  .tabbar button.active .lb { color:var(--jadeDeep); font-weight:700; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><b>도반</b><span>道伴</span></div>
+    <div class="tabname" id="tabname">마음 대화</div>
+  </div>
+
+  <div class="screen" id="s-meditate">
+    <div class="pad">
+      <div style="font-size:13px;color:var(--inkSoft);margin-bottom:4px;">오늘 아침의 한 구절</div>
+      <div class="verse">
+        <div class="q">"지나간 것을 슬퍼하지 말고,<br>오지 않은 것을 근심하지 말라."</div>
+        <div class="src">— 숫타니파타</div>
+      </div>
+      <div class="gloss">오늘 하루, 아직 오지 않은 걱정 하나를 잠시 내려놓아 볼까요. 지금 이 순간에만 머물러 보세요.</div>
+      <div class="h">1줄 묵상</div>
+      <div class="qsm">지금 내 마음에 '아직 오지 않은 걱정'은 무엇인가요?</div>
+      <textarea placeholder="떠오르는 대로 짧게 적어보세요…"></textarea>
+      <button class="btn" onclick="this.textContent='✓ 오늘의 명상을 마쳤어요';this.style.background='var(--jadeSoft)';this.style.color='var(--jadeDeep)';document.getElementById('friBar').classList.add('on');">저널 남기고 마치기</button>
+      <div class="week" id="week"></div>
+      <div class="streak">5일째 이어지는 중 · 매일의 마음 의례</div>
+    </div>
+  </div>
+
+  <div class="screen" id="s-study">
+    <div class="pad">
+      <div class="topicHead">명상에서 만난 말들의 <b>뿌리</b>를 배워요.<br>책 한 권 분량의 입문 교양을, 친구의 언어로.</div>
+      <div id="topics"></div>
+      <div class="lockNote">🔒 잠긴 주제는 Premium에서 열려요 · 입문 10주제</div>
+    </div>
+  </div>
+
+  <div class="screen active" id="s-talk">
+    <div id="chatScroll"></div>
+    <div class="composer">
+      <textarea id="input" rows="1" placeholder="마음을 편하게 적어보세요…"></textarea>
+      <button class="send" id="send">↑</button>
+    </div>
+    <div class="disclaimer">도반은 치료가 아닌 동반이에요. 마음이 많이 힘들 땐 109(자살예방)·1577-0199로 도움받을 수 있어요.</div>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <button data-tab="meditate"><span class="ic">🪷</span><span class="lb">매일 명상</span></button>
+    <button data-tab="study"><span class="ic">📖</span><span class="lb">공부</span></button>
+    <button data-tab="talk" class="active"><span class="ic">💬</span><span class="lb">마음 대화</span></button>
+  </div>
+
+<script>
+  const TAB_NAMES = { meditate:"매일 명상", study:"공부", talk:"마음 대화" };
+
+  const wk = ["월","화","수","목","금","토","일"];
+  document.getElementById("week").innerHTML = wk.map((d,i)=>
+    `<div class="d"><div class="bar ${i<4?'on':''}" ${i===4?'id="friBar"':''}></div><small>${d}</small></div>`).join("");
+
+  const TOPICS = [
+    ["무상(無常)","모든 것은 변한다 — 괴로움도 머물지 않는다",true],
+    ["자비(慈悲)","나와 남을 향한 따뜻한 마음",true],
+    ["연기(緣起)","모든 것은 서로 기대어 일어난다",true],
+    ["공(空)","고정된 '나'는 없다는 것의 의미",false],
+    ["사성제","괴로움과 그 길에 대한 네 가지 진리",false],
+  ];
+  document.getElementById("topics").innerHTML = TOPICS.map(([t,d,on],i)=>`
+    <div class="topic ${on?'':'locked'}" id="tp${i}">
+      <button ${on?`onclick="document.getElementById('tp${i}').classList.toggle('open')"`:''}>
+        <div><div class="tt">${t}</div><div class="td">${d}</div></div>
+        <span style="font-size:12px;color:${on?'var(--jade)':'var(--inkSoft)'}">${on?'▾':'🔒'}</span>
+      </button>
+      <div class="body">불교에서 '${t.split("(")[0]}'은 어렵게 들리지만, 사실 우리가 매일 겪는 일이에요. 이 개념을 일상의 예로 풀어가며, 궁금한 건 AI 도반에게 바로 물어볼 수 있어요.
+        <div><button class="askbtn" onclick="goTalk('${t.split("(")[0]}에 대해 쉽게 알려줘')">이 개념, 도반에게 물어보기 →</button></div>
+      </div>
+    </div>`).join("");
+
+  const tabbar = document.getElementById("tabbar");
+  tabbar.addEventListener("click", e => {
+    const btn = e.target.closest("button"); if(!btn) return;
+    const tab = btn.dataset.tab;
+    [...tabbar.children].forEach(b=>b.classList.toggle("active", b===btn));
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById("s-"+tab).classList.add("active");
+    document.getElementById("tabname").textContent = TAB_NAMES[tab];
+  });
+  function goTalk(q){
+    tabbar.querySelector('[data-tab="talk"]').click();
+    document.getElementById("input").value = q;
+    send();
+  }
+
+  const scroll = document.getElementById("chatScroll");
+  const input = document.getElementById("input");
+  const sendBtn = document.getElementById("send");
+  const STARTERS = ["요즘 잠이 잘 안 와요","이유 없이 불안해요","내가 뭘 하고 사는지 모르겠어요"];
+  let messages = [];
+  let loading = false;
+
+  function render(){
+    scroll.innerHTML = messages.map(m=>{
+      if(m.role==="user") return `<div class="row me"><div class="bubble">${esc(m.content)}</div></div>`;
+      return `<div class="row"><div class="ava">🪷</div><div class="bubble">${esc(m.content)}</div></div>`;
+    }).join("");
+    if(loading){
+      scroll.innerHTML += `<div class="typing"><span></span><span></span><span></span></div>`;
+    }
+    if(messages.length===1 && !loading){
+      scroll.innerHTML += STARTERS.map(s=>`<button class="starter" onclick="pick('${s}')">${s}</button>`).join("");
+    }
+    scroll.scrollTo({top:scroll.scrollHeight, behavior:"smooth"});
+  }
+  function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function pick(s){ input.value = s; send(); }
+
+  async function send(){
+    const text = input.value.trim();
+    if(!text || loading) return;
+    messages.push({role:"user", content:text});
+    input.value=""; input.style.height="auto";
+    loading = true; render(); updateSend();
+    try{
+      const res = await fetch("/api/chat", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ messages })
+      });
+      const data = await res.json();
+      messages.push({role:"assistant", content: data.reply || "잠시 마음을 고르고 있었어요. 다시 한 번 말씀해 주실래요?"});
+    }catch(e){
+      messages.push({role:"assistant", content:"지금은 연결이 어렵네요. 잠시 뒤에 다시 이야기 나눠요."});
+    }finally{
+      loading = false; render(); updateSend();
+    }
+  }
+  function updateSend(){ sendBtn.disabled = loading || !input.value.trim(); }
+
+  input.addEventListener("input", ()=>{
+    input.style.height="auto"; input.style.height=Math.min(input.scrollHeight,100)+"px"; updateSend();
+  });
+  input.addEventListener("keydown", e=>{
+    if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); send(); }
+  });
+  sendBtn.addEventListener("click", send);
+
+  messages.push({role:"assistant", content:"안녕하세요. 저는 도반이에요. 길을 함께 걷는 벗이라는 뜻이죠.\n오늘 마음은 좀 어떠세요? 무엇이든 편하게 꺼내 놓으셔도 괜찮아요."});
+  render(); updateSend();
+</script>
+</body>
+</html>
